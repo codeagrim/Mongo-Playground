@@ -6,8 +6,9 @@ import router from "./routes/router.js";
 
 const app = express();
 
-// dotenv config
+
 dotenv.config();
+
 
 // Db Connection
 dbconnect().then(
@@ -22,5 +23,4 @@ app.listen(process.env.PORT || 8000, () => {
 
 
 app.use(express.urlencoded({ extended: true }));
-
-app.use('/', router)
+app.use('/users', router)
