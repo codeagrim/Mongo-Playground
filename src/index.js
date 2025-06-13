@@ -1,7 +1,7 @@
 import express, { urlencoded } from "express";
 import dbconnect from "./db/db.js";
 import dotenv from 'dotenv';
-import router from "./routes/router.js";
+import router from "./routes/userRouter.js";
 
 
 const app = express();
