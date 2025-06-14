@@ -1,11 +1,7 @@
-import express, { urlencoded } from "express";
+import app from "./app.js"
 import dbconnect from "./db/db.js";
 import dotenv from 'dotenv';
 import router from "./routes/userRouter.js";
-
-
-const app = express();
-
 
 dotenv.config();
 
@@ -21,6 +17,4 @@ app.listen(process.env.PORT || 8000, () => {
     
     })
 
-
-app.use(express.urlencoded({ extended: true }));
 app.use('/users', router)
