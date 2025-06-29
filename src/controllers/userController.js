@@ -1,4 +1,4 @@
-import user from "../models/user.js";
+import user from "../models/user.model.js";
 
 
 // Get Users
@@ -33,7 +33,7 @@ async function handleUpdateUserById(req,res) {
     const id = req.params.id;
     const body = req.body;
 
-    const updateuser = await user.findByIdAndUpdate(id, body, {new: true,runValidators: true})
+    const updateuser = await user.findByIdAndUpdate(id, body, {new: true, runValidators: true})
     res.json({ message: "User updated", data: updateuser });
 }
 
