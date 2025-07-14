@@ -1,7 +1,7 @@
 import app from "./app.js"
 import dbconnect from "./db/db.js";
 import dotenv from 'dotenv';
-import router from "./routes/userRouter.js";
+
 
 dotenv.config();
 
@@ -17,4 +17,3 @@ app.listen(process.env.PORT || 8000, () => {
     
     })
 
-app.use('/users', router)

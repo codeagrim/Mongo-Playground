@@ -1,5 +1,5 @@
 import express from "express";
-import {handleGetAllUsers, handleCreateUser, handleUpdateUserById} from "../controllers/userController.js";
+import {handleGetAllUsers, handleCreateUser, handleUpdateUserById} from "../controllers/user.controller.js";
 
 
 const router = express.Router();
