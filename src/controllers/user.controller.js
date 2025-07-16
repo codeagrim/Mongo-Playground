@@ -1,11 +1,11 @@
 import user from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-// Get Users
 
 
+// Register user Controller
 
-const handleGetAllUsers = asyncHandler(async(req,res) =>
+const handleRegisterUser = asyncHandler(async(req,res) =>
     {
     const Users = await user.find({});
     res.status(200).json(Users)
@@ -32,4 +32,4 @@ const handleUpdateUserById = asyncHandler(async (req,res) => {
 })
 
 
-export { handleGetAllUsers, handleCreateUser, handleUpdateUserById };
+export { handleRegisterUser, handleCreateUser, handleUpdateUserById };
