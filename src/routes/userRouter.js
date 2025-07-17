@@ -5,7 +5,7 @@ import {handleRegisterUser, handleCreateUser, handleUpdateUserById} from "../con
 
 const router = express.Router();
 
-router.get('/register', upload.fields(
+router.post('/register', upload.fields(
 
     [{
             name: "avatar",
@@ -18,6 +18,7 @@ router.get('/register', upload.fields(
     }]
 
 ) ,handleRegisterUser)
+
 router.post('/', handleCreateUser)
 router.patch('/:id', handleUpdateUserById)
 export default router;

@@ -1,5 +1,6 @@
 import user from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiErrors.js";
 
 
 
@@ -7,8 +8,32 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const handleRegisterUser = asyncHandler(async(req,res) =>
     {
-    const Users = await user.find({});
-    res.status(200).json(Users)
+   
+        const {username, email, fullname, password} = req.body;
+
+        if([username, email, fullname, password].some((fields) => fields?.trim() === ""
+        ))
+        {
+            throw new ApiError(400, "All fields are required")
+        }
+
+
+        // Check for existing user
+
+       const existingUser = await user.findOne({$or: [{username, email}]});
+
+       if(existingUser){
+        throw new ApiError(409, "User Already Exists")
+       }
+
+       
+       // Image file 
+       const avatarFile = req.files?.avatar?.[0].path;
+
+
+
+
+
 })
 
 
