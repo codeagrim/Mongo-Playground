@@ -1,7 +1,8 @@
 import user from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiErrors.js";
-
+import {ApiResponse} from "../utils/ApiResponse.js"
+import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 
 
 // Register user Controller
@@ -29,10 +30,43 @@ const handleRegisterUser = asyncHandler(async(req,res) =>
        
        // Image file 
        const avatarFile = req.files?.avatar?.[0].path;
+       const CoverimageFile = req.files?.coverimage?.[0].path;
+
+       if(!avatarFile)
+       {
+        throw new ApiError(400, "Avatar File is required")
+       }
+
+       const avatar= await uploadOnCloudinary(avatarFile);
+      const coverimage = await uploadOnCloudinary(CoverimageFile);
+
+      console.log(avatar)
 
 
+       if(!avatar)
+       {
+        throw new ApiError(400, "Avatar File required");
+       }
 
 
+      const MyUser =  await user.create({
+        fullname,
+        avatar: avatar.url,
+        coverimage: coverimage?.url || "",
+        email,
+        password,
+        username: username.toLowerCase()
+
+      })
+
+
+    const createdUser = await user.findById(MyUser._id).select(" -password -refreshToken");
+
+    if(!createdUser){
+        throw new ApiError(500, "Error while Registering")
+    }
+
+    return res.status(201).json( new ApiResponse(200, createdUser, "Created User Sucessfully"))
 
 })
 

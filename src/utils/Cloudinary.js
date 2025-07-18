@@ -6,9 +6,9 @@ import fs from "fs";
 
 // Cbut we did in Chai Code Configuration with cloudinary
 cloudinary.config({
-  cloud_name: process.env.cloud_name,
-  api_key: process.env.clo_api_key,
-  api_secret: process.env.api_secret,
+  cloud_name: process.env.cloudinary_name,
+  api_key: process.env.cloudinary_api_key,
+  api_secret: process.env.cloudinary_api_secret,
 });
 
 // Upload on Cloudinary
