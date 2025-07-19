@@ -1,14 +1,17 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
+
 
 // IIFE given by cloudinary
 
 
 // Cbut we did in Chai Code Configuration with cloudinary
 cloudinary.config({
-  cloud_name: process.env.cloudinary_name,
-  api_key: process.env.cloudinary_api_key,
-  api_secret: process.env.cloudinary_api_secret,
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 // Upload on Cloudinary
