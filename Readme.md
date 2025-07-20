@@ -27,3 +27,14 @@
 
  
  -->
+
+ <!-- Created Register Controller
+
+    Handle - All Field Required
+    Check for Existing User
+    Handle Image file - Via Multer Middleware
+    Created new Record in DB
+    -password -refreshToken -> Removed these using select method
+
+ 
+ -->
