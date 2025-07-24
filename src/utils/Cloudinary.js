@@ -22,13 +22,13 @@ async function uploadOnCloudinary(FilePath) {
       return null; // return error message also
     }
 
-    const uploadResult = await cloudinary.uploader
+    const uploadResponse = await cloudinary.uploader
       .upload(FilePath,{
           resource_type: "auto",
         })
 // file is Uploaded
-    console.log(`File Uploaded : ${uploadResult.url}`);
-    return uploadResult;
+    fs.unlinkSync(FilePath)
+    return uploadResponse;
 
 
   } catch(error) {
