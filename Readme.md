@@ -35,6 +35,6 @@
     Handle Image file - Via Multer Middleware
     Created new Record in DB
     -password -refreshToken -> Removed these using select method
-
+     fs.unlinkSync(FilePath) // remove the temp files as the file operation failed
  
  -->
