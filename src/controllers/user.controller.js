@@ -5,7 +5,7 @@ import {ApiResponse} from "../utils/ApiResponse.js"
 import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 
 
-// Register user Controller
+// Register User Controller
 
 const handleRegisterUser = asyncHandler(async(req,res) =>
     {
@@ -71,14 +71,65 @@ const handleRegisterUser = asyncHandler(async(req,res) =>
 })
 
 
-// Add Users
+// Login Controller Starts Here
 
-
-const handleCreateUser = asyncHandler(async (req,res) =>
+const handleLoginUser = asyncHandler(async (req,res) =>
  {
-    const body = req.body;
-    const createuser = await user.create({...body})
-    res.status(201).json({message: "User Created", data: createuser});
+
+    //  Req User from Body 
+    // find the user 
+    // password check
+    //access token and refresh token 
+    // send cookie
+
+    const {username, email, password} = req.body;
+
+    if(!username && !email)
+    {
+        throw new ApiError(400, "Username or Email is Required")
+    }
+
+   const checkUser = await user.findOne({$or: [{username}, {email}]})
+
+   if(!checkUser)
+   {
+    throw new ApiError(404, "User Not Found");
+   }
+
+const isvalidPassword = await user.isPasswordCorrect(password)
+
+ if(!isvalidPassword)
+    {
+        throw new ApiError(401, "Invalid User Credentials")
+    }
+
+// Generate Access Token 
+
+const accessToken = await user.generateAccessToken();
+const refreshToken = await user.generateRefreshToken();
+
+user.refreshToken = refreshToken;
+user.save({validateBeforeSave: false})
+
+
+
+
+
+const options =
+{
+    httpOnly: true,
+    secure: true
+}
+
+return res.status(200)
+.cookie("accessToken", accessToken)
+.cookie("refreshToken", refreshToken)
+.json( new ApiResponse(200, { data: user// user ka data dalna hai abhi
+
+}, "User Logged in Sucessfully"))
+
+
+
 })
 
 
@@ -91,4 +142,4 @@ const handleUpdateUserById = asyncHandler(async (req,res) => {
 })
 
 
-export { handleRegisterUser, handleCreateUser, handleUpdateUserById };
+export { handleRegisterUser, handleLoginUser, handleUpdateUserById };
