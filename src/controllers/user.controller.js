@@ -112,7 +112,7 @@ user.refreshToken = refreshToken;
 user.save({validateBeforeSave: false})
 
 
-
+const loggedUser = await user.findById(checkUser._id).select('-refreshToken -password')
 
 
 const options =
@@ -124,22 +124,27 @@ const options =
 return res.status(200)
 .cookie("accessToken", accessToken)
 .cookie("refreshToken", refreshToken)
-.json( new ApiResponse(200, { data: user// user ka data dalna hai abhi
+.json( new ApiResponse(200, { data: loggedUser, accessToken, refreshToken
 
 }, "User Logged in Sucessfully"))
 
+})
 
+ 
+// Logout Controller Starts Here
 
+const handleLogout = asyncHandler(async (req,res) => {
+   
+user.findByIdAndUpdate(req.user._id, {$set: {refreshToken: undefined}}, {new: true })
+
+const options ={ 
+    httpOnly: true,
+    secure: true
+}
+
+return res.status(200).clearCookie("accessToken", options).clearCookie
+("refreshToken", options).json(new ApiResponse(200, {}, "User Logged Out"))
 })
 
 
-const handleUpdateUserById = asyncHandler(async (req,res) => {
-    const id = req.params.id;
-    const body = req.body;
-
-    const updateuser = await user.findByIdAndUpdate(id, body, {new: true, runValidators: true})
-    res.json({ message: "User updated", data: updateuser });
-})
-
-
-export { handleRegisterUser, handleLoginUser, handleUpdateUserById };
+export { handleRegisterUser, handleLoginUser, handleLogout };
