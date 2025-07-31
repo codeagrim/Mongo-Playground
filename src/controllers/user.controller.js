@@ -96,7 +96,7 @@ const handleLoginUser = asyncHandler(async (req,res) =>
     throw new ApiError(404, "User Not Found");
    }
 
-const isvalidPassword = await user.isPasswordCorrect(password)
+const isvalidPassword = await checkUser.isPasswordCorrect(password)
 
  if(!isvalidPassword)
     {
@@ -105,12 +105,11 @@ const isvalidPassword = await user.isPasswordCorrect(password)
 
 // Generate Access Token 
 
-const accessToken = await user.generateAccessToken();
-const refreshToken = await user.generateRefreshToken();
+const accessToken = await checkUser.generateAccessToken();
+const refreshToken = await checkUser.generateRefreshToken();
 
-user.refreshToken = refreshToken;
-user.save({validateBeforeSave: false})
-
+checkUser.refreshToken = refreshToken;
+checkUser.save({validateBeforeSave: false})
 
 const loggedUser = await user.findById(checkUser._id).select('-refreshToken -password')
 
@@ -122,8 +121,8 @@ const options =
 }
 
 return res.status(200)
-.cookie("accessToken", accessToken)
-.cookie("refreshToken", refreshToken)
+.cookie("accessToken", accessToken, options)
+.cookie("refreshToken", refreshToken, options)
 .json( new ApiResponse(200, { data: loggedUser, accessToken, refreshToken
 
 }, "User Logged in Sucessfully"))
@@ -135,15 +134,18 @@ return res.status(200)
 
 const handleLogout = asyncHandler(async (req,res) => {
    
-user.findByIdAndUpdate(req.user._id, {$set: {refreshToken: undefined}}, {new: true })
+    await user.findByIdAndUpdate(req.myUser._id, {
+  $unset: { refreshToken: "" }
+}, {new: true }) // this is not updating
 
 const options ={ 
-    httpOnly: true,
+    httpOnly: true,  
     secure: true
 }
 
-return res.status(200).clearCookie("accessToken", options).clearCookie
-("refreshToken", options).json(new ApiResponse(200, {}, "User Logged Out"))
+return res.status(200).clearCookie("accessToken", options)
+.clearCookie("refreshToken", options)
+.json(new ApiResponse(200, {}, "User Logged Out"))
 })
 
 
