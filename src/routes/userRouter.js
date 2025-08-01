@@ -1,6 +1,7 @@
 import express from "express";
 import { upload } from "../middlewares/multer.middleware.js";
-import {handleRegisterUser, handleCreateUser, handleUpdateUserById} from "../controllers/user.controller.js";
+import {handleRegisterUser, handleLoginUser, handleLogout} from "../controllers/user.controller.js";
+import { VerifyJWT } from "../middlewares/auth.middleware.js";
 
 
 const router = express.Router();
@@ -19,6 +20,6 @@ router.post('/register', upload.fields(
 
 ) ,handleRegisterUser)
 
-router.post('/', handleCreateUser)
-router.patch('/:id', handleUpdateUserById)
+router.post('/login', handleLoginUser)
+router.post('/logout', VerifyJWT,  handleLogout)
 export default router;

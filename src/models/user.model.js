@@ -69,7 +69,7 @@ userSchema.pre("save", async function (next) {
 // How to make Custom Methods
 
 userSchema.methods.isPasswordCorrect = async function (password) {
-  await bcrypt.compare(password, this.password);
+ return await bcrypt.compare(password, this.password);
 };
 
 //  ACCESS_TOKEN
@@ -84,6 +84,7 @@ userSchema.methods.generateAccessToken = function () {
       fullname: this.fullname,
     },
 
+    // secret
     process.env.ACCESS_TOKEN_SECRET,
 
     {
@@ -93,7 +94,7 @@ userSchema.methods.generateAccessToken = function () {
 };
 
 // REFRESH_TOKEN
-userSchema.methods.generateAccessToken = function () {
+userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       //payload
