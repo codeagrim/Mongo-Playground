@@ -7,14 +7,13 @@ export const VerifyJWT = asyncHandler(async (req, res, next) => {
 
    try {
     const token =  req.cookies?.accessToken || req.header("Authorization").replace("Bearer" , "");
- 
+
     if(!token){
-     throw new ApiError(401, "Unauthorized Request"); 
-    }
- 
-    const decodeToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
- 
-    const myUser = user.findById(decodeToken._id).select('-refreshToken -password');
+       throw new ApiError(401, "Unauthorized Request"); 
+      }
+      
+      const decodeToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+      const myUser =  await user.findById(decodeToken._id).select('-refreshToken -password');
  
     if(!myUser)
     {
@@ -23,8 +22,9 @@ export const VerifyJWT = asyncHandler(async (req, res, next) => {
  
  
     req.myUser = myUser;
-    
     next();
+
+
    } catch (error) {
     throw new ApiError(401, error?.message || "Invalid Access Token")
    }
