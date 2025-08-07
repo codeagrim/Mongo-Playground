@@ -4,6 +4,10 @@ import { ApiError } from "../utils/ApiErrors.js";
 import {ApiResponse} from "../utils/ApiResponse.js"
 import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 import jwt from "jsonwebtoken";
+import user from "../models/user.model.js";
+import { json } from "express";
+import { use } from "react";
+import { set } from "mongoose";
 
 
 // Register User Controller
@@ -193,5 +197,55 @@ const handleRefreshAccessToken = asyncHandler(async(req,res)=>{
     }
 })
 
+const handlePasswordChange = asyncHandler(async(req, res) =>{
 
-export { handleRegisterUser, handleLoginUser, handleLogout, handleRefreshAccessToken};
+    const {oldPassword, newPassword} = req.body;
+
+    const myUser =  await user.findOne(req.myUser._id)
+const isPasswordCorrect = await myUser.isPasswordCorrect(oldPassword)
+
+if(!isPasswordCorrect)
+{
+    throw new ApiError(400, "Invalid Password")
+}
+
+myUser.password = newPassword;
+await myUser.save({validateBeforeSave: false});
+
+return res.status(200).json(new ApiResponse(200, "Password Changed Successfully"))
+});
+
+const getCurrentUser = asyncHandler(async(req, res) => {
+
+  return res.status(200).json(new ApiResponse(200, req.myUser ,  "Current User"))
+});
+
+
+const handleUpdateUser = asyncHandler(async(req,res)=>{
+
+    const {fullname, email} = req.body;
+
+    if(!fullname || ! email)
+    {
+ throw new ApiError(400, "All Fields are Required")
+    }
+
+   const myUser =  await user.findByIdAndDelete(req.myUser._id,
+        {
+            $set:{
+                fullname,
+                email
+            }
+        },
+        
+        { new: true } // this will return after updated ===> new data that is updated using this query
+    ).select("-password") // will return user without password
+
+return res.status(200).json(new ApiResponse(200, myUser, "User Updated Successfully"))
+});
+
+
+
+
+
+export { handleRegisterUser, handleLoginUser, handleLogout, handleRefreshAccessToken, handlePasswordChange, handleUpdateUser, getCurrentUser};
