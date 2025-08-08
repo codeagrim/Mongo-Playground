@@ -230,7 +230,7 @@ const handleUpdateUser = asyncHandler(async(req,res)=>{
  throw new ApiError(400, "All Fields are Required")
     }
 
-   const myUser =  await user.findByIdAndDelete(req.myUser._id,
+   const myUser =  await user.findByIdAndUpdate(req.myUser._id,
         {
             $set:{
                 fullname,
@@ -245,7 +245,62 @@ return res.status(200).json(new ApiResponse(200, myUser, "User Updated Successfu
 });
 
 
+const handleAvatarUpdate = asyncHandler(async(req,res)=>{
+
+    const avatarFile = req.file?.path;
+
+    if(!avatarFile)
+    {
+        throw new ApiError(400,"Avatar File is required")
+    }
+
+  const avatar = await uploadOnCloudinary(avatarFile); // this is full object 
+
+  if(!avatar)
+  {
+    throw new ApiError(400, "Avatar File Upload Error")
+  }
+
+  const myUser = await user.findByIdAndUpdate(req.myUser._id, {
+     $set:{
+                avatar: avatar.url
+            }
+  }, {new: true}).select("-password")
+  
+
+  return res.status(200).json(new ApiResponse(200, myUser, "Avatar Updated Successfully"))
+
+});
+
+
+const handleCoverImageUpdate = asyncHandler(async(req,res)=>{
+
+    const coverImageFile = req.file?.path;
+
+    if(!coverImageFile)
+    {
+        throw new ApiError(400,"Cover Image is required")
+    }
+
+  const coverImage = await uploadOnCloudinary(coverImageFile); // this is full object 
+
+  if(!coverImage)
+  {
+    throw new ApiError(400, "Cover Image Upload Error")
+  }
+
+  const myUser = await user.findByIdAndUpdate(req.myUser._id, {
+     $set:{
+                coverimage: coverImage.url
+            }
+  }, {new: true}).select("-password")
+  
+
+  return res.status(200).json(new ApiResponse(200, myUser, "Cover Image Updated Successfully"))
+
+});
 
 
 
-export { handleRegisterUser, handleLoginUser, handleLogout, handleRefreshAccessToken, handlePasswordChange, handleUpdateUser, getCurrentUser};
+export { handleRegisterUser, handleLoginUser, handleLogout, handleRefreshAccessToken,
+     handlePasswordChange, handleUpdateUser, getCurrentUser, handleAvatarUpdate, handleCoverImageUpdate};
