@@ -4,9 +4,7 @@ import { ApiError } from "../utils/ApiErrors.js";
 import {ApiResponse} from "../utils/ApiResponse.js"
 import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 import jwt from "jsonwebtoken";
-import user from "../models/user.model.js";
 import { json } from "express";
-import { use } from "react";
 import { set } from "mongoose";
 
 
@@ -201,7 +199,11 @@ const handlePasswordChange = asyncHandler(async(req, res) =>{
 
     const {oldPassword, newPassword} = req.body;
 
-    const myUser =  await user.findOne(req.myUser._id)
+     if (oldPassword === newPassword) {
+        throw new ApiError(400, "Old password and new password can't be the same");
+    }
+
+    const myUser =  await user.findById(req.myUser._id)
 const isPasswordCorrect = await myUser.isPasswordCorrect(oldPassword)
 
 if(!isPasswordCorrect)
