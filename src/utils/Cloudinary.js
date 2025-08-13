@@ -38,4 +38,29 @@ async function uploadOnCloudinary(FilePath) {
   }
 }
 
-export {uploadOnCloudinary}
+
+
+
+async function deleteOnCloudinary(url) {
+    
+
+    // i know this may not be the best way to do
+const parts = url.split('/');
+  const public_id = parts[parts.length - 1].split('.')[0]; 
+  
+
+   try {
+     const deleteImage = cloudinary.uploader.destroy(public_id);
+     return deleteImage;
+   } catch (err) {
+
+    
+    throw new Error("Failed to delete file from Cloudinary", err);
+    
+   }
+}
+
+
+
+
+export {uploadOnCloudinary, deleteOnCloudinary}

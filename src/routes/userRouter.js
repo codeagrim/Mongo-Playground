@@ -27,4 +27,5 @@ router.post('/login', handleLoginUser)
 router.post('/logout', VerifyJWT,  handleLogout)
 router.post('/refresh-token',handleRefreshAccessToken )
 router.post('/change-password', VerifyJWT, handlePasswordChange)
+router.post('/change-avatar', VerifyJWT, upload.single('avatar'), handleAvatarUpdate)
 export default router;
